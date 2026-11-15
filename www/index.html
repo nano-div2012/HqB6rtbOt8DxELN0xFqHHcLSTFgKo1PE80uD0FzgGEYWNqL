@@ -1,11 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <meta http-equiv="Refresh" content="0; url='https://example.com/'" />
-    <script>window.location.replace("https://example.com/");</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Login Monitoring</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0a2e, #2d1b4e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #555;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background: #ff6b7a;
+        }
+        .status {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
 </head>
-<body style="margin:0;padding:0;background-color:#ffffff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
-    Redirecting...
+<body>
+    <div class="container">
+        <h2>Panel Login Monitoring</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Masukkan username..." required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Masukkan password..." required>
+            </div>
+            <button type="submit">Kirim Login</button>
+        </form>
+        <div class="status" id="status">Menunggu login...</div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simpan ke localStorage (bisa diakses dari F12 -> Application -> Local Storage)
+            const logs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
+            logs.push({
+                username: username,
+                password: password,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('loginLogs', JSON.stringify(logs));
+            
+            // Update UI
+            document.getElementById('status').innerText = `Login tercatat: ${username}`;
+            document.getElementById('loginForm').reset();
+        });
+
+        // Load logs lama saat halaman dibuka
+        window.onload = function() {
+            const logs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
+            if (logs.length > 0) {
+                document.getElementById('status').innerText = `Total logins: ${logs.length}`;
+                // Bisa juga tampilin daftar logins
+                console.log('Logs:', logs);
+            }
+        };
+    </script>
 </body>
 </html>
